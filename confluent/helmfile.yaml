@@ -1,0 +1,19 @@
+helmDefaults:
+  verify: false
+  wait: true
+  force: false
+  createNamespace: true
+  cleanupOnFail: true
+
+repositories:
+- name: confluentinc
+  url: https://packages.confluent.io/helm
+
+releases:
+  - name: cfk
+    chart: confluentinc/confluent-for-kubernetes
+    namespace: confluent
+    version: 0.921.40
+    createNamespace: true
+    values:
+      - ./values.yaml
