@@ -1,0 +1,14 @@
+helmDefaults:
+  verify: false
+  wait: true
+  force: false
+  createNamespace: true
+  cleanupOnFail: true
+
+releases:
+  - name: debezium
+    chart: ../charts/debezium
+    namespace: debezium
+    createNamespace: true
+    values:
+      - ./values.yaml

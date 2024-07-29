@@ -1,24 +1,88 @@
+# apiVersion: platform.confluent.io/v1beta1
+# kind: Kafka
+# metadata:
+#   name: kafka
+#   namespace: confluent
+# spec:
+#   replicas: 1
+#   image:
+#     application: confluentinc/cp-kafka:7.7.0
+#     init: confluentinc/cp-init-container-operator:6.1.6.0
+#   dataVolumeCapacity: 10Gi
+#   # license:
+#   # listeners:
+#   # services:
+#   dependencies:
+#     # schemaRegistry:
+#     # zookeeper:
+#       # discovery:
+#       #   name:
+#       #   namespace:
+#       # endpoint: ""
+---
 apiVersion: platform.confluent.io/v1beta1
-kind: SchemaRegistry
+kind: Connect
 metadata:
-  name: schemaregistry
+  name: kconnect
   namespace: confluent
+  annotations:
+    platform.confluent.io/confluent-hub-install-extra-args: "--worker-configs /dev/null --component-dir /mnt/plugins --no-check-certificate"
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-schema-registry:7.6.2
-    init: confluentinc/confluent-init-container:2.8.3
-  # authentication:
-  # authorization:
-  configOverrides:
-    # jvm: []
-    # log4j: []
-    # server:
-    #   - http://yasser.solutions
+    application: confluentinc/cp-server-connect:7.7.0
+    init: confluentinc/cp-init-container-operator:6.1.6.0
+  build:
+    type: onDemand
+    onDemand:
+      plugins:
+        confluentHub:
+          - name: debezium-connector-mysql
+            owner: debezium
+            version: latest
+          - name: kafka-connect-jdbc
+            owner: confluentinc
+            version: 10.7.4
+  enableSchemas: true
+  keyConverterType:
+  valueConverterType: org.apache.kafka.connect.json.JsonConverter
+  # license:
   dependencies:
     kafka:
-      discovery:
-        name: sample-kafka
-        namespace: fake
-  enableSchemaExporter:
-  k8sClusterDomain: cluster.local
+      bootstrapEndpoint: http://kafka-broker-headless.kafka.svc.cluster.local:9092
+      # discovery:
+      #   name: kafka
+      #   namespace: kafka
+    # licenseCluster:
+    # producer:
+    schemaRegistry:
+      # url:
+  telemetry:
+    global: true
+  # metrics:
+  #   prometheus: true
+# ---
+# apiVersion: platform.confluent.io/v1beta1
+# kind: SchemaRegistry
+# metadata:
+#   name: schemaregistry
+#   namespace: confluent
+# spec:
+#   replicas: 1
+#   image:
+#     application: confluentinc/cp-schema-registry:7.6.2
+#     init: confluentinc/confluent-init-container:2.8.3
+#   # authentication:
+#   # authorization:
+#   configOverrides:
+#     # jvm: []
+#     # log4j: []
+#     # server:
+#     #   - http://yasser.solutions
+#   dependencies:
+#     kafka:
+#       discovery:
+#         name: sample-kafka
+#         namespace: fake
+#   enableSchemaExporter:
+#   k8sClusterDomain: cluster.local
