@@ -90,9 +90,9 @@ ui:
       cpu: 500m
       memory: 1Gi
 
-  # env:
-  #   - name: KAFKA_CONNECT_URIS
-  #     value: "http://kconnect.confluent.svc.cluster.local:8083"
+  env:
+    - name: KAFKA_CONNECT_URIS
+      value: "http://debezium-connect:8083"
   #   - name: CONFIG_STORAGE_TOPIC
   #     value: debezium_connect_configs
   #   - name: OFFSET_STORAGE_TOPIC

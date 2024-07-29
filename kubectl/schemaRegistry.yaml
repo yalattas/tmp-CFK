@@ -44,7 +44,7 @@ spec:
             owner: confluentinc
             version: 10.7.4
   enableSchemas: true
-  keyConverterType:
+  # keyConverterType:
   valueConverterType: org.apache.kafka.connect.json.JsonConverter
   # license:
   dependencies:
