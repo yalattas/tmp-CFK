@@ -1,0 +1,46 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: Connect
+metadata:
+  name: kconnect
+  namespace: confluent
+  # annotations:
+  #   platform.confluent.io/confluent-hub-install-extra-args: "--worker-configs /dev/null --component-dir /mnt/plugins --no-check-certificate"
+spec:
+  replicas: 1
+  # configOverrides:
+  #   server:
+  #     - plugin.path=/usr/share/java,/mnt/plugins
+  internalTopicReplicationFactor: 1
+  keyConverterType: org.apache.kafka.connect.json.JsonConverter
+  valueConverterType: org.apache.kafka.connect.json.JsonConverter
+  oneReplicaPerNode: true
+  image:
+    application: confluentinc/cp-server-connect:7.7.0
+    init: confluentinc/confluent-init-container:2.2.0-1
+  build:
+    type: onDemand
+    onDemand:
+      plugins:
+        confluentHub:
+          - name: debezium-connector-mysql
+            owner: debezium
+            version: latest
+          - name: kafka-connect-jdbc
+            owner: confluentinc
+            version: 10.7.4
+  enableSchemas: true
+  # license:
+  dependencies:
+    kafka:
+      bootstrapEndpoint: http://kafka-broker-headless.kafka.svc.cluster.local:9092
+  #     # discovery:
+  #     #   name: kafka
+  #     #   namespace: kafka
+  #   # licenseCluster:
+  #   # producer:
+  #   # schemaRegistry:
+  #     # url:
+  telemetry:
+    global: true
+  # # metrics:
+  #   prometheus: true
