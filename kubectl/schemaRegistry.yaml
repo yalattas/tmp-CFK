@@ -8,17 +8,6 @@ spec:
   image:
     application: confluentinc/cp-schema-registry:7.6.2
     init: confluentinc/confluent-init-container:2.8.3
-  # authentication:
-  # authorization:
-  # configOverrides:
-    # jvm: []
-    # log4j: []
-    # server:
-    #   - http://yasser.solutions
   dependencies:
     kafka:
-      discovery:
-        name: sample-kafka
-        namespace: fake
-  # enableSchemaExporter:
-  k8sClusterDomain: cluster.local
+      bootstrapEndpoint: http://kafka-broker-headless.kafka.svc.cluster.local:9092

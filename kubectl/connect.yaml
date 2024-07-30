@@ -7,12 +7,27 @@ metadata:
   #   platform.confluent.io/confluent-hub-install-extra-args: "--worker-configs /dev/null --component-dir /mnt/plugins --no-check-certificate"
 spec:
   replicas: 1
-  # configOverrides:
-  #   server:
-  #     - plugin.path=/usr/share/java,/mnt/plugins
+  configOverrides:
+    server:
+      # - plugin.path=/usr/share/java,/mnt/plugins
+      - rest.port=8083
+      - group.id=compose-connect-group
+      - config.storage.topic=docker-connect-configs
+      - config.storage.replication.factor=1
+      - offset.flush.interval.ms=10000
+      - offset.storage.topic=docker-connect-offsets
+      - offset.storage.replication.factor=1
+      - status.storage.topic=docker-connect-status
+      - status.storage.replication.factor=1
+      - key.converter=io.confluent.connect.avro.avroconverter
+      - value.converter=io.confluent.connect.avro.avroconverter
+      - key.converter.schema.registry.url=http://schemaregistry:8081
+      - value.converter.schema.registry.url=http://schemaregistry:8081
+      - key.converter.key.subject.name.strategy=io.confluent.kafka.serializers.subject.topicrecordnamestrategy
+      - value.converter.value.subject.name.strategy=io.confluent.kafka.serializers.subject.topicrecordnamestrategy
+      - plugin.path="/usr/share/java,/usr/share/confluent-hub-components"
+      - log4j.loggers=org.apache.zookeeper=error,org.i0itec.zkclient=error,org.reflections=error
   internalTopicReplicationFactor: 1
-  keyConverterType: org.apache.kafka.connect.json.JsonConverter
-  valueConverterType: org.apache.kafka.connect.json.JsonConverter
   oneReplicaPerNode: true
   image:
     application: confluentinc/cp-server-connect:7.7.0
