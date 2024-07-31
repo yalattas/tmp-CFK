@@ -5,10 +5,10 @@
 
 
 /* Create the database */
-CREATE DATABASE  IF NOT EXISTS testing;
+CREATE DATABASE  IF NOT EXISTS inventory;
 
 /* Switch to the classicmodels database */
-USE testing;
+USE inventory;
 
 /* Drop existing tables  */
 DROP TABLE IF EXISTS productlines;
