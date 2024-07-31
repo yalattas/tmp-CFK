@@ -9,26 +9,30 @@ spec:
   replicas: 1
   configOverrides:
     server:
-      # - plugin.path=/usr/share/java,/mnt/plugins
       - rest.port=8083
-      - group.id=compose-connect-group
-      - config.storage.topic=docker-connect-configs
+      # - group.id=compose-connect-group
+      # - config.storage.topic=docker-connect-configs
       - config.storage.replication.factor=1
-      - offset.flush.interval.ms=10000
-      - offset.storage.topic=docker-connect-offsets
+      # - offset.flush.interval.ms=10000
+      # - offset.storage.topic=docker-connect-offsets
+      # - status.storage.topic=docker-connect-status
       - offset.storage.replication.factor=1
-      - status.storage.topic=docker-connect-status
       - status.storage.replication.factor=1
       - key.converter=io.confluent.connect.avro.AvroConverter
       - value.converter=io.confluent.connect.avro.AvroConverter
       - key.converter.schema.registry.url=http://schemaregistry:8081
-      - key.converter.key.subject.name.strategy=io.confluent.kafka.serializers.subject.topicrecordnamestrategy
-      - key.converter.enhanced.avro.schema.support=true
       - value.converter.schema.registry.url=http://schemaregistry:8081
-      - value.converter.value.subject.name.strategy=io.confluent.kafka.serializers.subject.topicrecordnamestrategy
-      - value.converter.enhanced.avro.schema.support=true
-      - plugin.path="/usr/share/java,/usr/share/confluent-hub-components"
+      - key.converter.key.subject.name.strategy=io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+      - value.converter.value.subject.name.strategy=io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+      # - key.converter.enhanced.avro.schema.support=true
+      # - value.converter.enhanced.avro.schema.support=true
+      - plugin.path=/usr/share/java,/usr/share/confluent-hub-components,/mnt/plugins
       - log4j.loggers=org.apache.zookeeper=error,org.i0itec.zkclient=error,org.reflections=error
+    # jvm:
+    #   - "-Xmx4G" # This removes -Xmx parameter
+    #   - "-Xms2G" # This removes -Xms parameter
+    #   - "-XX:+UseContainerSupport"
+    #   - "-XX:MaxRAMPercentage=50.0"
   internalTopicReplicationFactor: 1
   oneReplicaPerNode: true
   image:
@@ -53,14 +57,30 @@ spec:
   dependencies:
     kafka:
       bootstrapEndpoint: http://kafka-broker-headless.kafka.svc.cluster.local:9092
-  #     # discovery:
-  #     #   name: kafka
-  #     #   namespace: kafka
+  telemetry:
+    global: true
+  # podTemplate:
+  #   terminationGracePeriodSeconds: 30
+  #   labels:
+  #     retention: normal
+  #   affinity:
+  #     nodeAffinity:
+  #       requiredDuringSchedulingIgnoredDuringExecution:
+  #         nodeSelectorTerms:
+  #           - matchExpressions:
+  #               - key: role
+  #                 operator: In
+  #                 values:
+  #                   - tools
+  #   resources:
+  #     requests:
+  #       cpu: 1
+  #       memory: 1Gi
+  #     limits:
+  #       memory: 1Gi
   #   # licenseCluster:
   #   # producer:
   #   # schemaRegistry:
   #     # url:
-  telemetry:
-    global: true
   # # metrics:
   #   prometheus: true

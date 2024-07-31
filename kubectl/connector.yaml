@@ -1,0 +1,33 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: Connector
+metadata:
+  name: dbbeaver
+  namespace: confluent
+spec:
+  name: "inventory-connector"
+  class: io.debezium.connector.mysql.MySqlConnector
+  configs:
+    database.hostname: "mysql.mysql.svc.cluster.local"
+    database.port: "3306"
+    database.user: "root"
+    database.password: "debezium"
+    database.server.id : "1"
+    topic.prefix :  "dbserver1"
+    database.include.list :  "inventory"
+    schema.history.internal.kafka.bootstrap.servers :  "kafka.kafka.svc.cluster.local:9092"
+    schema.history.internal.kafka.topic :  "schemahistory.inventory"
+    transforms :  "InsertField,Reroute,PartitionRouting"
+    transforms.InsertField.type :  "org.apache.kafka.connect.transforms.InsertField$Key"
+    transforms.InsertField.topic.field :  "table"
+    transforms.Reroute.type :  "org.apache.kafka.connect.transforms.RegexRouter"
+    transforms.Reroute.regex : "(.*)"
+    transforms.Reroute.replacement : "all_tables"
+    tombstones.on.delete: "false"
+    transforms.PartitionRouting.type : "io.debezium.transforms.partitions.PartitionRouting"
+    transforms.PartitionRouting.partition.payload.fields : "source.table, source.db"
+    transforms.PartitionRouting.partition.topic.num: "2"
+    # name: "inventory-connector"
+  restartPolicy:
+    maxRetry: 10
+    type: OnFailure
+  taskMax: 1
