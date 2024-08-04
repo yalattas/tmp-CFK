@@ -1,0 +1,11 @@
+apiVersion: v2
+name: confluentGalaxy
+description: Confluent resources for k8s
+type: application
+version: 0.0.1
+appVersion: 2.8.3
+dependencies:
+- name: confluent-for-kubernetes
+  version: 0.921.40
+  repository: "https://packages.confluent.io/helm"
+  alias: cfk
