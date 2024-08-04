@@ -1,0 +1,28 @@
+{{- range $name, $value := .Values.connectors }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ $.Values.connect.name }}-post-install-check-{{ $name }}"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+        - name: http-check
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - |
+              HTTP_STATUS=$(wget --spider --server-response http://{{ $.Values.connect.name }}:8083/v1/metadata/id 2>&1 | awk '/HTTP/{print $2}')
+              if [ "$HTTP_STATUS" -ne 200 ]; then
+                echo "HTTP check failed with status $HTTP_STATUS"
+                exit 1
+              fi
+              echo "HTTP check passed with status $HTTP_STATUS"
+      restartPolicy: Never
+{{- end }}

@@ -28,6 +28,7 @@ connect:
       - name: ""
         dopplerEnabled: false
         data: {} # remove if doppler is enabled
+          # database.hostname: "${file:/mnt/secrets/SECRET_REF/KEY}"
 
 connectors:
   # connector1:
