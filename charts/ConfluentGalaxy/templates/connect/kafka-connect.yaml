@@ -1,0 +1,58 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: Connect
+metadata:
+  name: {{ .Values.connect.name }}
+  {{- with .Values.connect.annotations }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  replicas: {{ int .Values.connect.replicas }}
+  {{- with .Values.connect.license }}
+  license:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.connect.configOverrides }}
+  configOverrides:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  internalTopicReplicationFactor: {{ int .Values.connect.internalTopicReplicationFactor | default 1 }}
+  oneReplicaPerNode: {{ .Values.connect.oneReplicaPerNode | default true }}
+  image:
+    application: {{ .Values.connect.image.application }}
+    init: {{ .Values.connect.image.init }}
+  {{- with .Values.connect.build }}
+  build:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  enableSchemas: {{ .Values.connect.enableSchemas | default true }}
+  {{- with .Values.connect.dependencies }}
+  dependencies:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.connect.podTemplate }}
+  podTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.connect.telemetry }}
+  telemetry:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.connect.metrics }}
+  metrics:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.connect.mountedVolumes }}
+  mountedVolumes:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.connect.mountedSecrets.enabled }}
+  {{- with .Values.connect.mountedSecrets }}
+  mountedSecrets:
+    {{- range $secret := .secrets }}
+    - secretRef: {{ $secret.name | quote }}
+    {{- end }}
+  {{- end }}
+  {{- end }}

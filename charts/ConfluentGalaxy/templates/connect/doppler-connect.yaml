@@ -1,0 +1,17 @@
+{{- if and .Values.connect.mountedSecrets.enabled }}
+{{- range $secret := .Values.connect.mountedSecrets.secrets }}
+  {{- if $secret.dopplerEnabled }}
+---
+apiVersion: secrets.doppler.com/v1alpha1
+kind: DopplerSecret
+metadata:
+  name: {{ $secret.name }}-doppler
+  namespace: doppler-operator-system
+spec:
+  managedSecret:
+    name: {{ $secret.name }}
+    namespace: {{ .Release.Namespace }}
+    type: Opaque
+  {{- end }}
+{{- end }}
+{{- end }}

@@ -1,4 +1,33 @@
+#######################
+#                     #
+#   Confluent CRDs    #
+#                     #
+#######################
 
+connect:
+  name: ""
+  annotations: {}
+  replicas: 1
+  configOverrides: {}
+  internalTopicReplicationFactor: 1
+  oneReplicaPerNode: true
+  enableSchema: true
+  license: {}
+  image:
+    application: confluentinc/cp-server-connect:7.7.0
+    init: confluentinc/confluent-init-container:2.2.0-1
+  build: {}
+  dependencies: {}
+  telemetry: {}
+  podTemplate: {}
+  metrics: {}
+  mountedVolumes: {}
+  mountedSecrets:
+    enabled: false
+    secrets:
+      - name: ""
+        dopplerEnabled: false
+        data: {} # remove if doppler is enabled
 #######################
 #                     #
 # Confluent Sub-Chart #
