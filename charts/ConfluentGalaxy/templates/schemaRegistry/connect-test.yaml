@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ $.Values.connect.name }}-connect-post-install-check"
+  name: "{{ .Values.schemaRegistry.name }}-registry-post-install-check"
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -16,7 +16,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              HTTP_STATUS=$(wget --spider --server-response http://{{ $.Values.connect.name }}-connect:8083/v1/metadata/id 2>&1 | awk '/HTTP/{print $2}')
+              HTTP_STATUS=$(wget --spider --server-response http://{{ $.Values.schemaRegistry.name }}-registry:8081/v1/metadata/id 2>&1 | awk '/HTTP/{print $2}')
               if [ "$HTTP_STATUS" -ne 200 ]; then
                 echo "HTTP check failed with status $HTTP_STATUS"
                 exit 1

@@ -36,6 +36,37 @@ connectors:
   #   class: ""
   #   configs: {}
   #   restartPolicy: {}
+
+schemaRegistry:
+  name: ""
+  image:
+    application: confluentinc/cp-schema-registry:7.6.2
+    init: confluentinc/confluent-init-container:2.8.3
+  annotations: {}
+  replicas: 1
+  oneReplicaPerNode: false
+  license: {}
+  configOverrides: {}
+  dependencies: {}
+  headlessService: {}
+  podTemplate: {}
+  injectAnnotations: {}
+  injectLabels: {}
+  internalTopicReplicatorFactor: 1
+  k8sClusterDomain: "cluster.local"
+  passwordEncoder: {}
+  mountedVolumes: {}
+  telemetry: {}
+  tls: {}
+  mountedSecrets:
+    enabled: false
+    secrets:
+      - name: ""
+        dopplerEnabled: false
+        data: {} # remove if doppler is enabled
+          # database.hostname: "${file:/mnt/secrets/SECRET_REF/KEY}"
+
+
 #######################
 #                     #
 # Confluent Sub-Chart #

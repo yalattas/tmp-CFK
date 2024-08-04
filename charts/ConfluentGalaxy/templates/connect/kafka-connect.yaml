@@ -1,7 +1,7 @@
 apiVersion: platform.confluent.io/v1beta1
 kind: Connect
 metadata:
-  name: {{ .Values.connect.name }}
+  name: "{{ .Values.connect.name }}-connect"
   {{- with .Values.connect.annotations }}
   annotations:
     {{- range $key, $value := . }}

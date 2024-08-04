@@ -1,0 +1,71 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: "{{ .Values.schemaRegistry.name }}-registry"
+  {{- with .Values.schemaRegistry.annotations }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  replicas: {{ int .Values.schemaRegistry.replicas }}
+  oneReplicaPerNode: {{ .Values.schemaRegistry.oneReplicaPerNode | default false }}
+  {{- with .Values.schemaRegistry.license }}
+  license:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.configOverrides }}
+  configOverrides:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  image:
+    application: {{ .Values.schemaRegistry.image.application }}
+    init: {{ .Values.schemaRegistry.image.init }}
+  {{- with .Values.schemaRegistry.dependencies }}
+  dependencies:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  enableSchemaExporter: {{ .Values.schemaRegistry.enableSchemaExporter | default false }}
+  {{- with .Values.schemaRegistry.headlessService }}
+  headlessService:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.podTemplate }}
+  podTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.injectAnnotations }}
+  injectAnnotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.injectLabels }}
+  injectLabels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  internalTopicReplicatorFactor: {{ int .Values.schemaRegistry.internalTopicReplicatorFactor | default 1 }}
+  k8sClusterDomain: {{ .Values.schemaRegistry.k8sClusterDomain | default "cluster.local" | quote }}
+  {{- with .Values.schemaRegistry.mountedVolumes }}
+  mountedVolumes:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.schemaRegistry.mountedSecrets.enabled }}
+  {{- with .Values.schemaRegistry.mountedSecrets }}
+  mountedSecrets:
+    {{- range $secret := .secrets }}
+    - secretRef: {{ $secret.name | quote }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.passwordEncoder }}
+  passwordEncoder:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.telemetry }}
+  telemetry:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.schemaRegistry.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

@@ -3,7 +3,7 @@
 apiVersion: platform.confluent.io/v1beta1
 kind: Connector
 metadata:
-  name: {{ $name }}
+  name: {{ $name }}-connector
   {{- with $value.annotations }}
   annotations:
     {{- range $key, $value := . }}
@@ -11,7 +11,7 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
-  name: {{ $name | quote }}
+  name: "{{ $name }}-connector"
   class: {{ $value.class | quote}}
   taskMax: {{ int $value.taskMax | default 1 }}
   {{- with $value.configs }}
