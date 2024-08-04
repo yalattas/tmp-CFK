@@ -28,6 +28,13 @@ connect:
       - name: ""
         dopplerEnabled: false
         data: {} # remove if doppler is enabled
+
+connectors:
+  # connector1:
+  #   annotations: {}
+  #   class: ""
+  #   configs: {}
+  #   restartPolicy: {}
 #######################
 #                     #
 # Confluent Sub-Chart #

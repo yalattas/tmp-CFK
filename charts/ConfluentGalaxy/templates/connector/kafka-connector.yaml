@@ -1,0 +1,35 @@
+{{- range $name, $value := .Values.connectors }}
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Connector
+metadata:
+  name: {{ $name }}
+  {{- with $value.annotations }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  name: {{ $name | quote }}
+  class: {{ $value.class | quote}}
+  taskMax: {{ int $value.taskMax | default 1 }}
+  {{- with $value.configs }}
+  configs:
+    {{- range $key, $config := . }}
+    {{ $key }}: {{ $config | quote }}
+    {{- end }}
+  {{- end }}
+  {{- with $value.connectClusterRef }}
+  connectClusterRef:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $value.connectRest }}
+  connectRest:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $value.restartPolicy }}
+  restartPolicy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
